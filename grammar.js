@@ -64,6 +64,7 @@ module.exports = grammar({
     /\s/,
     $.line_comment,
     $.block_comment,
+    $.documentation_block_comment, // Add the new documentation block comment to extras
   ],
 
   externals: $ => [
@@ -77,6 +78,7 @@ module.exports = grammar({
     $._block_comment_content,
     $._line_doc_content,
     $._error_sentinel,
+    $.documentation_block_comment, // Add the new documentation block comment to extras
   ],
 
   supertypes: $ => [
@@ -1532,6 +1534,7 @@ module.exports = grammar({
     comment: $ => choice(
       $.line_comment,
       $.block_comment,
+      $.documentation_block_comment, // Add a new rule for documentation block comments
     ),
 
     line_comment: $ => seq(
@@ -1579,6 +1582,12 @@ module.exports = grammar({
     _block_doc_comment_marker: $ => choice(
       field('outer', alias($._outer_block_doc_comment_marker, $.outer_doc_comment_marker)),
       field('inner', alias($._inner_block_doc_comment_marker, $.inner_doc_comment_marker)),
+    ),
+
+    documentation_block_comment: $ => seq(
+      '///',
+      /[^\n]*/, // Capture the content of the first line
+      repeat(seq('\n', '///', /[^\n]*/)), // Capture subsequent lines starting with ///
     ),
 
     _path: $ => choice(
