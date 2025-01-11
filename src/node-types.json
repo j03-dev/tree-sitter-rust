@@ -1478,6 +1478,11 @@
     }
   },
   {
+    "type": "documentation_block_comment",
+    "named": true,
+    "fields": {}
+  },
+  {
     "type": "dynamic_type",
     "named": true,
     "fields": {
@@ -4924,6 +4929,10 @@
     }
   },
   {
+    "type": "\n",
+    "named": false
+  },
+  {
     "type": "!",
     "named": false
   },
@@ -5037,6 +5046,10 @@
   },
   {
     "type": "//",
+    "named": false
+  },
+  {
+    "type": "///",
     "named": false
   },
   {

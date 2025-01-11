@@ -8964,6 +8964,10 @@
         {
           "type": "SYMBOL",
           "name": "block_comment"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "documentation_block_comment"
         }
       ]
     },
@@ -9178,6 +9182,51 @@
         }
       ]
     },
+    "documentation_block_comment": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "///"
+        },
+        {
+          "type": "REPEAT",
+          "content": {
+            "type": "SEQ",
+            "members": [
+              {
+                "type": "PATTERN",
+                "value": "[^\\n]*"
+              },
+              {
+                "type": "STRING",
+                "value": "\n"
+              },
+              {
+                "type": "STRING",
+                "value": "///"
+              },
+              {
+                "type": "PATTERN",
+                "value": "[^\\n]*"
+              }
+            ]
+          }
+        },
+        {
+          "type": "STRING",
+          "value": "///"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[^\\n]*"
+        },
+        {
+          "type": "STRING",
+          "value": "\n"
+        }
+      ]
+    },
     "_path": {
       "type": "CHOICE",
       "members": [
@@ -9366,6 +9415,10 @@
     {
       "type": "SYMBOL",
       "name": "block_comment"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "documentation_block_comment"
     }
   ],
   "conflicts": [
@@ -9446,6 +9499,10 @@
     {
       "type": "SYMBOL",
       "name": "_error_sentinel"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "_documentation_block_comment"
     }
   ],
   "inline": [
