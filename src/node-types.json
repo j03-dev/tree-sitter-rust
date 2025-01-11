@@ -912,11 +912,15 @@
     "named": true,
     "fields": {
       "doc": {
-        "multiple": false,
+        "multiple": true,
         "required": false,
         "types": [
           {
             "type": "doc_comment",
+            "named": true
+          },
+          {
+            "type": "doc_comment_marker",
             "named": true
           }
         ]
@@ -1478,7 +1482,7 @@
     }
   },
   {
-    "type": "documentation_block_comment",
+    "type": "doc_comment_marker",
     "named": true,
     "fields": {}
   },

@@ -64,7 +64,6 @@ module.exports = grammar({
     /\s/,
     $.line_comment,
     $.block_comment,
-    $.documentation_block_comment,
   ],
 
   externals: $ => [
@@ -78,7 +77,6 @@ module.exports = grammar({
     $._block_comment_content,
     $._line_doc_content,
     $._error_sentinel,
-    $._documentation_block_comment
   ],
 
   supertypes: $ => [
@@ -1534,7 +1532,6 @@ module.exports = grammar({
     comment: $ => choice(
       $.line_comment,
       $.block_comment,
-      $.documentation_block_comment,
     ),
 
     line_comment: $ => seq(
@@ -1563,39 +1560,46 @@ module.exports = grammar({
     _inner_line_doc_comment_marker: _ => token.immediate(prec(2, '!')),
     _outer_line_doc_comment_marker: _ => token.immediate(prec(2, '/')),
 
-    block_comment: $ => seq(
-      '/*',
-      optional(
-        choice(
-          // Documentation block comments: /** docs */ or /*! docs */
-          seq(
-            $._block_doc_comment_marker,
-            optional(field('doc', alias($._block_comment_content, $.doc_comment))),
+    block_comment: $ => choice(
+      seq(
+        '/*',
+        optional(
+          choice(
+            // Documentation block comments: /** docs */ or /*! docs */
+            seq(
+              $._block_doc_comment_marker,
+              optional(field('doc', alias($._block_comment_content, $.doc_comment))),
+            ),
+            // Non-doc block comments
+            $._block_comment_content,
           ),
-          // Non-doc block comments
-          $._block_comment_content,
         ),
+        '*/',
       ),
-      '*/',
+      seq(
+        '///', // Add /// as a block comment start
+        optional(
+          choice(
+            // Documentation block comments: /// docs
+            seq(
+              $._block_doc_comment_marker,
+              optional(field('doc', alias($._block_comment_content, $.doc_comment))),
+            ),
+            // Non-doc block comments
+            $._block_comment_content,
+          ),
+        ),
+        "\n"
+      ),
     ),
 
     _block_doc_comment_marker: $ => choice(
       field('outer', alias($._outer_block_doc_comment_marker, $.outer_doc_comment_marker)),
       field('inner', alias($._inner_block_doc_comment_marker, $.inner_doc_comment_marker)),
+      field('doc', alias($._doc_comment_marker, $.doc_comment_marker)), // Add /// as a doc comment marker
     ),
 
-    documentation_block_comment: $ => seq(
-      '///',
-      repeat(seq(
-        /[^\n]*/, // Capture the content of each line
-        '\n',     // Ensure each line ends with a newline
-        '///',    // Capture the /// at the start of the next line
-        /[^\n]*/  // Capture the content of the next line
-      )),
-      '///',     // Capture the final /// at the end of the block
-      /[^\n]*/,  // Capture the content of the final line
-      '\n'       // Ensure the block ends with a newline
-    ),
+    _doc_comment_marker: _ => token.immediate(prec(2, '///')), // Define /// as a doc comment marker
 
     _path: $ => choice(
       $.self,
